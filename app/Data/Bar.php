@@ -15,4 +15,9 @@ class Bar {
   {
     return $this->foo->foo() . " and bar class";
   }
+
+  public function getFoo (): Foo
+  {
+    return $this->foo;
+  }
 }
