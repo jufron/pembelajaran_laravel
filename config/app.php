@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\FooBarServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -159,6 +160,8 @@ return [
         /*
          * Package Service Providers...
          */
+        
+        App\Providers\FooBarServiceProvider::class,
 
         /*
          * Application Service Providers...
