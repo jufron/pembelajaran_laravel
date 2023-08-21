@@ -16,3 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('/about', fn () => 'hello about');
+Route::get('/contact', fn () => 'hello contact');
+
+Route::get('/seting', fn() =>  redirect()->route('seting.dev'));
+Route::get('/seting/dev', fn() => 'hello seting dev')->name('seting.dev');
+
+
+Route::fallback( fn() => '404 by JR' );
