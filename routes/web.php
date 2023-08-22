@@ -26,3 +26,5 @@ Route::get('/seting/dev', fn() => 'hello seting dev')->name('seting.dev');
 
 
 Route::fallback( fn() => '404 by JR' );
+
+Route::get('/profile', fn() => view('hello', ['nama' => 'james']));
