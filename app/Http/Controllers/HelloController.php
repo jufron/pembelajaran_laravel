@@ -23,9 +23,12 @@ class HelloController extends Controller
         ]);
     }
 
-    public function index (string $nama): string
+    public function index (Request $request, string $nama): string
     {
         // return $this->goodbyeService->goodbyee($nama);
+        var_dump("full url : ". $request->fullUrl());
+        var_dump("path : " . $request->path());
+        var_dump("url : " . $request->url());
         return $this->goodbyeeServiceIndonesia->goodbyee($nama);
     }
 
@@ -33,4 +36,13 @@ class HelloController extends Controller
     {
         return $this->helloServiceIndonesia->getFirstName();
     }
+
+    public function request (Request $request)
+    {
+        return
+            $request->path()  . PHP_EOL .
+            $request->method() . PHP_EOL .
+            $request->fullUrl() . PHP_EOL .
+            $request->header('accept');
+     }
 }

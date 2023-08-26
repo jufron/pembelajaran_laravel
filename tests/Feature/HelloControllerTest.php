@@ -21,4 +21,17 @@ class HelloControllerTest extends TestCase
              ->assertStatus(200)
              ->assertSeeText('sinta');
     }
+
+    public function test_request (): void
+    {
+        $this->withHeaders([
+            'accept' => 'plain/text',
+            'x-header'   => 'sinta'
+            ])
+                         ->get('request')
+                         ->assertSeeText('GET')
+                         ->assertSeeText('plain/text');
+                        //  ->assertSeeText('sinta');
+
+    }
 }

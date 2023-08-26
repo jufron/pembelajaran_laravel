@@ -47,4 +47,5 @@ Route::get('/user/{nama?}', fn ($nama = 'not found') => "hallo user $nama");
 Route::controller(HelloController::class)->group( function () {
     Route::get('hello/{nama}', 'index');
     Route::get('profile', 'show');
+    ROute::get('request', 'request');
 });
