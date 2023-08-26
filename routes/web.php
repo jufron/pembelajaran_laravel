@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HelloController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,9 +30,9 @@ Route::fallback( fn() => '404 by JR' );
 
 Route::get('/profile', fn() => view('hello', ['nama' => 'james']));
 
-Route::get('hello/{nama}/{id}', function (string $nama, string $id) {
-    return "hallo $nama id saya $id";
-});
+// Route::get('hello/{nama}/{id}', function (string $nama, string $id) {
+//     return "hallo $nama id saya $id";
+// });
 
 Route::get('siswa/{id}', function (string $id) {
     return "hallo $id";
@@ -42,3 +43,8 @@ Route::get('mapel/{id}', fn (string $id) => "mata pelajaran id $id")->where('id'
 
 // * optional parameter
 Route::get('/user/{nama?}', fn ($nama = 'not found') => "hallo user $nama");
+
+Route::controller(HelloController::class)->group( function () {
+    Route::get('hello/{nama}', 'index');
+    Route::get('profile', 'show');
+});

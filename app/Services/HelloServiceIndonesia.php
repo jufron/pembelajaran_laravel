@@ -10,7 +10,7 @@ class HelloServiceIndonesia implements HelloInterface {
   protected string $negara;
 
   public function __construct(
-   string $firstName, 
+   string $firstName,
    string $email,
    string $negara
   )
@@ -25,7 +25,7 @@ class HelloServiceIndonesia implements HelloInterface {
     return $this->firstName;
   }
 
-  public function getEamil(): string
+  public function getEmail(): string
   {
     return $this->email;
   }
