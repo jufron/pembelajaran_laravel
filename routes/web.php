@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\InputController;
 use Illuminate\Support\Facades\Route;
@@ -55,4 +56,8 @@ Route::controller(InputController::class)->group( function () {
     Route::get('input/request', 'hello');
     Route::post('input/request', 'hello');
     Route::post('input/nested', 'helloNested');
+});
+
+Route::controller(FileController::class)->group( function () {
+    Route::post('avatar', 'upload')->name('upload.avatar');
 });
