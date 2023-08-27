@@ -26,9 +26,9 @@ class HelloController extends Controller
     public function index (Request $request, string $nama): string
     {
         // return $this->goodbyeService->goodbyee($nama);
-        var_dump("full url : ". $request->fullUrl());
-        var_dump("path : " . $request->path());
-        var_dump("url : " . $request->url());
+        // var_dump("full url : ". $request->fullUrl());
+        // var_dump("path : " . $request->path());
+        // var_dump("url : " . $request->url());
         return $this->goodbyeeServiceIndonesia->goodbyee($nama);
     }
 

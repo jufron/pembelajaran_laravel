@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HelloController;
+use App\Http\Controllers\InputController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,4 +49,10 @@ Route::controller(HelloController::class)->group( function () {
     Route::get('hello/{nama}', 'index');
     Route::get('profile', 'show');
     ROute::get('request', 'request');
+});
+
+Route::controller(InputController::class)->group( function () {
+    Route::get('input/request', 'hello');
+    Route::post('input/request', 'hello');
+    Route::post('input/nested', 'helloNested');
 });
