@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\CookiesController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\InputController;
+use App\Http\Controllers\ResponseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -60,4 +62,18 @@ Route::controller(InputController::class)->group( function () {
 
 Route::controller(FileController::class)->group( function () {
     Route::post('avatar', 'upload')->name('upload.avatar');
+});
+
+Route::controller(ResponseController::class)->group( function () {
+    Route::get('response/data', 'response');
+    Route::get('response/header', 'responseWithHeader');
+    Route::get('response/view', 'responseView');
+    Route::get('response/file', 'responseFile');
+    Route::get('response/download', 'responseDownload');
+});
+
+Route::controller(CookiesController::class)->group( function () {
+    Route::get('cookies/set', 'cookiesSet');
+    Route::get('cookies/get', 'getCookies');
+    Route::get('cookies/expire', 'cookiesExpire');
 });
