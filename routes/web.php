@@ -5,6 +5,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\InputController;
 use App\Http\Controllers\ResponseController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 
 Route::get('/about', fn () => 'hello about');
@@ -76,4 +77,15 @@ Route::controller(CookiesController::class)->group( function () {
     Route::get('cookies/set', 'cookiesSet');
     Route::get('cookies/get', 'getCookies');
     Route::get('cookies/expire', 'cookiesExpire');
+});
+
+Route::middleware('contoh')->group(function () {
+    Route::get('middleware/test', function () {
+        return 'halaman untuk middleware';
+    });
+});
+
+Route::controller(SessionController::class)->group( function () {
+    Route::get('session/set', 'sessionSet');
+    Route::get('session/get', 'sessionGet');
 });
