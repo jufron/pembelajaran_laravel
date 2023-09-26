@@ -89,3 +89,11 @@ Route::controller(SessionController::class)->group( function () {
     Route::get('session/set', 'sessionSet');
     Route::get('session/get', 'sessionGet');
 });
+
+Route::get('error', function () {
+    throw new Exception('ada yang error ni');
+});
+Route::get('error/manual/report', function () {
+    report(throw new Exception('error ini akan dipantau oleh reportable'));
+    return 'ok';
+});
