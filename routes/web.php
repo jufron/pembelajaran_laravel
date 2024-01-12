@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('form/login', [FormController::class, 'login']);
+Route::get('login', [FormController::class, 'form_login']);
+Route::post('login', [FormController::class, 'login_post'])->name('login');
