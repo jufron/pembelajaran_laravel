@@ -1,0 +1,372 @@
+{
+    "openapi":"3.0.2",
+    "info": {
+      "title":"address api service",
+      "version":"1.0"
+    },
+    "servers": [
+      {
+        "url":"https://localhost:8000",
+        "description": "adalah url server untuk seluruh service yang ada"
+      }
+    ],
+    "paths": {
+      "/api/contacts/{idContact}/addreses": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "$ref": "#/components/parameters/idContact"
+          }
+        ],
+        "post": {
+          "description": "create new address",
+          "requestBody":{
+            "description": "request body for post create one data address",
+            "required": true,
+            "content": {
+              "application/json":{
+                "schema":{
+                  "required": ["street", "rt", "rw", "city", "province", "country", "postalCode"],
+                  "type": "object",
+                  "properties": {
+                    "street":{
+                      "type": "string"
+                    },
+                    "rt":{
+                      "type": "string"
+                    },
+                    "rw":{
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "province":{
+                      "type": "string"
+                    },
+                    "country":{
+                      "type": "string"
+                    },
+                    "postalCode":{
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "data1":{
+                    "value": {
+                      "street": "Jalan Contoh",
+                      "rt": "001",
+                      "rw": "002",
+                      "city": "Kota Contoh",
+                      "province": "Provinsi Contoh",
+                      "country": "Negara Contoh",
+                      "postalCode": "12345"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201":{
+              "description": "success save one data address",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "data":{
+                        "type": "object",
+                        "required": ["id", "street", "rt", "rw", "city", "province", "country", "postalCode"],
+                        "properties": {
+                          "id":{
+                            "type": "number"
+                          },
+                          "street":{
+                            "type": "string"
+                          },
+                          "rt":{
+                            "type": "string"
+                          },
+                          "rw":{
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "province":{
+                            "type": "string"
+                          },
+                          "country":{
+                            "type": "string"
+                          },
+                          "postalCode":{
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "description": "get all address",
+          "responses": {
+            "200":{
+              "description": "",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "data":{
+                        "type": "array",
+                        "items":{
+                          "type": "object",
+                          "properties": {
+                            "id":{
+                              "type": "number"
+                            },
+                            "street":{
+                              "type": "string"
+                            },
+                            "rt":{
+                              "type": "string"
+                            },
+                            "rw":{
+                              "type": "string"
+                            },
+                            "city": {
+                              "type": "string"
+                            },
+                            "province":{
+                              "type": "string"
+                            },
+                            "country":{
+                              "type": "string"
+                            },
+                            "postalCode":{
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/contacts/{idContact}/addreses/{idAddress}": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "$ref": "#/components/parameters/idContact"
+          },
+          {
+            "name": "idAddress",
+            "in": "path",
+            "description": "get current data where id address",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "get": {
+          "description": "get current address where id",
+          "responses": {
+            "200":{
+              "description": "get data address succesfull",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "data":{
+                        "type": "object",
+                        "required": ["id", "street", "rt", "rw", "city", "province", "country", "postalCode"],
+                        "properties": {
+                          "id":{
+                            "type": "number"
+                          },
+                          "street":{
+                            "type": "string"
+                          },
+                          "rt":{
+                            "type": "string"
+                          },
+                          "rw":{
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "province":{
+                            "type": "string"
+                          },
+                          "country":{
+                            "type": "string"
+                          },
+                          "postalCode":{
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "description": "update current address where id",
+          "requestBody":{
+            "description": "request body for put update one data address excsist",
+            "required": true,
+            "content": {
+              "application/json":{
+                "schema":{
+                  "required": ["street", "rt", "rw", "city", "province", "country", "postalCode"],
+                  "type": "object",
+                  "properties": {
+                    "street":{
+                      "type": "string"
+                    },
+                    "rt":{
+                      "type": "string"
+                    },
+                    "rw":{
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "province":{
+                      "type": "string"
+                    },
+                    "country":{
+                      "type": "string"
+                    },
+                    "postalCode":{
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "data1":{
+                    "value": {
+                      "street": "Jalan Contoh",
+                      "rt": "001",
+                      "rw": "002",
+                      "city": "Kota Contoh",
+                      "province": "Provinsi Contoh",
+                      "country": "Negara Contoh",
+                      "postalCode": "12345"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200":{
+              "description": "succesfull update one current data address",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "data":{
+                        "type": "object",
+                        "required": ["id", "street", "rt", "rw", "city", "province", "country", "postalCode"],
+                        "properties": {
+                          "id":{
+                            "type": "number"
+                          },
+                          "street":{
+                            "type": "string"
+                          },
+                          "rt":{
+                            "type": "string"
+                          },
+                          "rw":{
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "province":{
+                            "type": "string"
+                          },
+                          "country":{
+                            "type": "string"
+                          },
+                          "postalCode":{
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "description": "delete current address where id",
+          "responses": {
+            "200":{
+              "description": "success delete one data address",
+              "content": {
+                "application/json":{
+                  "schema":{
+                    "type": "object",
+                    "properties": {
+                      "data":{
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "parameters": {
+        "authorization":{
+          "name": "authorization",
+          "in": "header",
+          "description": "authentication checking",
+          "required": true,
+          "schema":{
+            "type": "string"
+          }
+        },
+        "idContact":{
+          "name": "idContact",
+          "in": "path",
+          "description": "get current data where id contact",
+          "required": true,
+          "schema":{
+            "type": "string"
+          }
+        }
+      }
+    }
+  }

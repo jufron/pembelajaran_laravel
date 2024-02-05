@@ -1,0 +1,462 @@
+{
+  "openapi":"3.0.2",
+  "info" : {
+      "title": "API for user service",
+      "summary": "API user service tersebut untuk menangani service service user.",
+      "description": "api user service untuk melakukan operasi crud lewat service service yang ditetapkan",
+      "termsOfService": "https://userAPI.com/terms/",
+      "contact": {
+        "name": "jufron tamo ama",
+        "url": "https://www.jufrontamoama.com/support",
+        "email": "jufrnotamoama@gmail.com"
+      },
+      "license": {
+        "name": "Apache 2.0",
+        "identifier": "Apache-2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+      },
+      "version": "1.0.1"
+  },
+  "servers": [
+      {
+        "url": "http://lcalhost:8000",
+        "description": "adalah url server untuk seluruh service yang ada"
+      }
+  ],
+  "paths": {
+    "/api/user/register": {
+      "summary": "path api user register",
+      "description": "path tersebut untuk melakukan registrasi user yang baru",
+      "post": {
+        "description": "melakukan aksi register",
+        "requestBody": {
+          "description": "request body untuk post",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password", "name"],
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "jufron": {
+                  "description": "username for jufron",
+                  "value": {
+                    "username": "jufron",
+                    "password": "12345678",
+                    "name": "jufron"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "successfull register response",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "errors": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "success register user",
+                    "value": {
+                      "data": {
+                        "id": 1,
+                        "name": "jufron",
+                        "username": "jufron"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "validasi gagal",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "validationError": {
+                    "description": "validation error",
+                    "value": {
+                      "errors": {
+                        "username": [
+                          "username required",
+                          "username max 3 charackter"
+                        ],
+                        "password": [
+                          "password required",
+                          "password have symbol",
+                          "password have number"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/resourceNotFount"
+          },
+          "500": {
+            "$ref": "#/components/responses/internalServerError"
+          }
+        }
+      }
+    },
+    "/api/user/login": {
+      "summary": "path api user login",
+      "description": "path tersebut untuk melakukan login pada user yang sudah teregistrasi",
+      "post": {
+        "description": "melakukan aksi login",
+        "requestBody": {
+          "description": "request body login",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "berhasil melakukan login akan mengembalikan respnse berhasil dengan data sebagai berikut",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["id", "name", "username", "token"],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "token": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "errors": {
+                      "type": "array"
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "success register user",
+                    "value": {
+                      "data": {
+                        "id": 1,
+                        "name": "jufron",
+                        "username": "jufron",
+                        "token": "12jfie12pfsdkfopevnri2"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/resourceNotFount"
+          },
+          "500": {
+            "$ref": "#/components/responses/internalServerError"
+          }
+        }
+      }
+    },
+    "/api/users/current": {
+      "summary": "mendapatkan data user terbaru",
+      "description": "path tersebut untuk mendapatkan data user sekarang/terbaru",
+      "get": {
+        "description": "mengambil data user terbaru",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema":{
+              "type": "string",
+              "description": "Bearer token for authentication"
+            }
+          }
+        ],
+        "responses": {
+          "200":{
+            "description": "berhasil mendapatkan user sekarang",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "required": ["id", "name", "username"],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "errors": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/resourceNotFount"
+          },
+          "500": {
+            "$ref": "#/components/responses/internalServerError"
+          }
+        }
+      },
+      "patch": {
+        "description": "melakukan aksi perbaharui data",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema":{
+              "type": "string",
+              "description": "Bearer token for authentication"
+            }
+          }
+        ],
+        "requestBody":{
+          "description": "update current user",
+          "content": {
+            "application/json":{
+              "schema":{
+                "type": "object",
+                "properties": {
+                  "name":{
+                    "type": "string"
+                  },
+                  "password":{
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200":{
+            "description": "berhasil mendapatkan user sekarang",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "required": ["id", "name", "username"],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "errors": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/resourceNotFount"
+          },
+          "500": {
+            "$ref": "#/components/responses/internalServerError"
+          }
+        }
+      }
+    },
+    "/api/user/logout": {
+      "summary": "lgout user",
+      "description": "path tersebut untuk melakukan logout pada user yang berhasil login",
+      "delete": {
+        "description": "melakukan aksi logout user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema":{
+              "type": "string",
+              "description": "Bearer token for authentication"
+            }
+          }
+        ],
+        "responses": {
+          "200":{
+            "description": "berhasil logout user",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "required": ["id", "name", "username"],
+                  "properties": {
+                    "data": {
+                      "type": "boolean"
+                    },
+                    "errors": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/resourceNotFount"
+          },
+          "500": {
+            "$ref": "#/components/responses/internalServerError"
+          }
+
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {
+      "resourceNotFount": {
+        "description": "resource tidak ditemukan",
+        "content": {
+          "application/json":{
+            "schema":{
+              "type": "object",
+              "required": ["status", "message"],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": "404"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "resource not found"
+                }
+              }
+            },
+            "examples": {
+              "notFound": {
+                "description": "resource not fount",
+                "value": {
+                  "status": 404 ,
+                  "message": "resource not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "internalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["status", "message"],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            },
+            "examples": {
+              "serverError": {
+                "summary": "Server Error",
+                "description": "An example of an internal server error response",
+                "value": {
+                  "status": 500,
+                  "message": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
