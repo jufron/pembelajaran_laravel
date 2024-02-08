@@ -3,20 +3,12 @@
 namespace App\Services\Mpl;
 
 use App\Services\Interface\UserService;
+use Illuminate\Support\Facades\Auth;
 
 class UserServiceMpl implements UserService
 {
-    private array $user = [
-        'username'  => 'james',
-        'password'  => '12345678'
-    ];
-
-    public function login(string $user, string $password): bool
+    public function login(string $email, string $password): bool
     {
-        if ($this->user['username'] === $user && $this->user['password'] === $password) {
-            return true;
-        } else {
-            return false;
-        }
+        return Auth::attempt(['email' => $email, 'password' => $password]);
     }
 }

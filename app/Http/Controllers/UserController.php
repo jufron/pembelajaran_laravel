@@ -28,21 +28,21 @@ class UserController extends Controller
     public function actionLogin (Request $request): Response | RedirectResponse
     {
         $request->validate([
-            'username'  => ['required'],
+            'email'     => ['required'],
             'password'  => ['required']
         ]);
 
-        $username = $request->input('username');
+        $email = $request->input('email');
         $password = $request->input('password');
 
-        if ($this->userservice->login($username, $password)) {
+        if ($this->userservice->login($email, $password)) {
             $request->session()->regenerate();
-            $request->session() ->put('auth', $username);    
+            $request->session() ->put('auth', $email);
             return redirect()->route('dashboard');
-        } else {
-            return redirect()->route('login')
-                             ->withErrors('username atau password anda salah');
         }
+
+        return redirect()->route('login')
+                        ->withErrors('username atau password anda salah');
     }
 
     public function logout (Request $request): Response | RedirectResponse

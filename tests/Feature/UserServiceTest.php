@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
-use Mockery;
+use App\Models\User;
 use Tests\TestCase;
 use App\Services\Interface\UserService;
+use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Testing\Assert;
 
 class UserServiceTest extends TestCase
 {
@@ -17,6 +20,7 @@ class UserServiceTest extends TestCase
     {
         parent::setUp();
         $this->userservice = app()->make(UserService::class);
+        User::query()->delete();
     }
 
     public function test_userservice_called (): void
@@ -26,11 +30,13 @@ class UserServiceTest extends TestCase
 
     public function test_login_success (): void
     {
-        $this->assertTrue($this->userservice->login('james', '12345678'));
+        $this->seed([UserSeeder::class]);
+        $this->assertTrue($this->userservice->login('jufrontamoama@gmail.com', '12345678'));
     }
 
     public function test_login_fail (): void
     {
-        $this->assertFalse($this->userservice->login('sinta', '87654321'));
+        // Assert::assertArraySubset();
+        $this->assertFalse($this->userservice->login('jufrontamoama@gmail.com', '12345678'));
     }
 }

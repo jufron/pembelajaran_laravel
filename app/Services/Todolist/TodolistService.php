@@ -5,7 +5,7 @@ namespace App\Services\Todolist;
 
 interface TodolistService {
 
-    public function saveTodo (string $id, string $todo): void;
+    public function saveTodo (string $todo): void;
 
     public function getTodo (): array;
 

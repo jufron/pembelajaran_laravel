@@ -30,7 +30,7 @@ class TodolistController extends Controller
             'todo'  => ['required']
         ]);
 
-        $this->todolistService->saveTodo(uniqid(), $request->input('todo'));
+        $this->todolistService->saveTodo($request->input('todo'));
         return response()->redirectToRoute('dashboard');
     }
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Todo;
 use App\Services\Todolist\TodolistService;
 use App\Services\Todolist\TodolistServiceImplementation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,6 +18,10 @@ class TodolistServiceTest extends TestCase
     {
         parent::setUp();
         $this->todolistService = app()->make(TodolistService::class);
+
+        if (Todo::query()->count() >= 1) {
+            Todo::query()->delete();
+        }
     }
 
     public function test_todolist_service_called (): void
@@ -27,23 +32,16 @@ class TodolistServiceTest extends TestCase
 
     public function test_save_data_todolist (): void
     {
-        $this->todolistService->saveTodo('1', 'todo 1');
-        $this->todolistService->saveTodo('2', 'todo 2');
+        $this->todolistService->saveTodo('todo 1');
+        $this->todolistService->saveTodo('todo 2');
 
-        $todolist = Session::get('todolist');
+        $todo = $this->todolistService->getTodo();
 
-        $this->assertEquals('1', $todolist[0]['id']);
-        $this->assertEquals('todo 1', $todolist[0]['todo']);
-        $this->assertEquals('2', $todolist[1]['id']);
-        $this->assertEquals('todo 2', $todolist[1]['todo']);
+        $this->assertEquals('todo 1', $todo[0]['todolist']);
+        $this->assertEquals('todo 2', $todo[1]['todolist']);
 
-        self::assertArrayHasKey('id', $todolist[0]);
-        self::assertArrayHasKey('todo', $todolist[1]);
-
-        // foreach ($todolist as $to) {
-        //     self::assertEquals('2', $to['id']);
-        //     self::assertEquals('todo 2', $to['todo']);
-        // }
+        self::assertArrayHasKey('id', $todo[0]);
+        self::assertArrayHasKey('todolist', $todo[1]);
     }
 
     public function test_get_data_todolist_empty (): void
@@ -55,37 +53,29 @@ class TodolistServiceTest extends TestCase
 
     public function test_get_data_todolist (): void
     {
-        $this->todolistService->saveTodo('1', 'todo 1');
+        $this->todolistService->saveTodo('todo 1');
         $todo = $this->todolistService->getTodo();
 
         foreach($todo as $to) {
-            $this->assertEquals('1', $to['id']);
-            $this->assertEquals('todo 1', $to['todo']);
+            $this->assertEquals('todo 1', $to['todolist']);
         }
     }
 
     public function test_delete_data_todolist_where_id_todo (): void
     {
-        $this->todolistService->saveTodo('1', 'todo 1');
-        $this->todolistService->saveTodo('2', 'todo 2');
-        $this->todolistService->saveTodo('3', 'todo 3');
+        $this->todolistService->saveTodo('todo 1');
+        $this->todolistService->saveTodo('todo 2');
+        $this->todolistService->saveTodo('todo 3');
 
-        $this->todolistService->deleteTodo('1');
+        $todoId = Todo::query()->first()->id;
+        $this->todolistService->deleteTodo($todoId);
 
         $todolist = $this->todolistService->getTodo();
 
         $this->assertEquals(2, count($todolist));
 
         $this->assertArrayHasKey(0, $todolist);
-        $this->assertEquals('2', $todolist[0]['id']);
-        $this->assertEquals('todo 2', $todolist[0]['todo']);
-        $this->assertEquals('3', $todolist[1]['id']);
-        $this->assertEquals('todo 3', $todolist[1]['todo']);
-
-        $this->todolistService->deleteTodo('2');
-
-        $todolist_current = $this->todolistService->getTodo();
-
-        $this->assertEquals(1, count($todolist_current));
+        $this->assertEquals('todo 2', $todolist[0]['todolist']);
+        $this->assertEquals('todo 3', $todolist[1]['todolist']);
     }
 }
