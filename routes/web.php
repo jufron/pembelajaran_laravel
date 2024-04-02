@@ -31,8 +31,8 @@ Route::middleware('auth')->group(function () {
 
 Route::controller(UserController::class)->group( function () {
     Route::post('user/login', 'login');
-    // Route::get('user/current', 'currentUser');
-    Route::get('user/current', 'currentUser')->middleware('auth:token');
+    Route::get('user/current', 'currentUser')->middleware('auth');
+    Route::get('api/user/current', 'currentUser')->middleware('auth:token');
 });
 
 

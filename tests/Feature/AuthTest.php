@@ -86,4 +86,27 @@ class AuthTest extends TestCase
         ->assertStatus(200)
         ->assertSee('hello : erik@gmail.com');
     }
+
+    public function test_current_api_successfull () : void
+    {
+        $this->seed(UserSeeder::class);
+        $this->get('api/user/current', [
+            'API_KEY' => 'secret'
+        ])
+        ->assertOk()
+        ->assertSuccessful()
+        ->assertStatus(200)
+        ->assertSee('hello : erik@gmail.com');
+    }
+
+    public function test_current_failed () : void
+    {
+        $this->seed(UserSeeder::class);
+        $this->get('api/user/current', [
+            'accept'    => 'applicatin/json',
+            "API_KEY"   => 'token_fail'
+        ])
+        ->assertUnauthorized()
+        ->assertStatus(401);
+    }
 }

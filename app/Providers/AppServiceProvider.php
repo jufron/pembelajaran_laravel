@@ -38,9 +38,9 @@ class AppServiceProvider extends ServiceProvider
                 Auth::createUserProvider($config['provider']),
                 $app->make(Request::class)
             );
-            $app->refresh('request', $tokenGuard, 'setRequest');
+            app()->refresh('request', $tokenGuard, 'setRequest');
+            // $app->refresh('request', $tokenGuard, 'setRequest');
             return $tokenGuard;
         });
-
     }
 }

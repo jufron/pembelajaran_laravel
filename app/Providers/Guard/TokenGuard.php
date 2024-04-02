@@ -17,8 +17,8 @@ class TokenGuard implements Guard {
 
     public function __construct(UserProvider $provider, Request $request)
     {
-        $this->provider = $provider;
         $this->request = $request;
+        $this->setProvider($provider);
     }
 
     public function setRequest (Request $request) : void
@@ -40,7 +40,7 @@ class TokenGuard implements Guard {
         return $this->user;
     }
 
-    public function validate(array $credentials = [])
+    public function validate(array $credentials = []) : bool
     {
         return $this->provider->validateCredentials($this->user, $credentials);
     }
