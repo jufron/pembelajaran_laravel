@@ -58,35 +58,6 @@ class AuthTest extends TestCase
         ->assertRedirectToRoute('dashboard');
     }
 
-    public function test_current () : void
-    {
-        // test fail
-        // $this->get('user/current')
-        // ->assertSeeText('hello guest');
-
-        // $user = User::factory()->create([
-        //     'email_verified_at' => now()
-        // ]);
-
-        // $this->actingAs($user)->get('user/current')
-        // ->assertSeeText('hello : ' . $user->email );
-
-        $this->seed(UserSeeder::class);
-
-        $this->get('user/current', [
-            'accept'    => 'application/json'
-        ])
-        ->assertStatus(401)
-        ->assertUnauthorized();
-
-        $this->get('user/current', [
-            'API_KEY'   => 'secret'
-        ])
-        ->assertOk()
-        ->assertStatus(200)
-        ->assertSee('hello : erik@gmail.com');
-    }
-
     public function test_current_api_successfull () : void
     {
         $this->seed(UserSeeder::class);
