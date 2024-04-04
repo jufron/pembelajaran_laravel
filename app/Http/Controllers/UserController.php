@@ -26,6 +26,14 @@ class UserController extends Controller
     public function currentUser ()
     {
         $user = Auth::user();
-        return $user ? 'hello : ' . $user->email : 'hello guest';
+        // return $user ? 'hello : ' . $user->email : 'hello guest';
+
+        if ($user) {
+            if (isset($user->email) && $user->email !== null) {
+                return "hello $user->email";
+            }
+            return "hello $user->name";
+        }
+        return "hello guest";
     }
 }

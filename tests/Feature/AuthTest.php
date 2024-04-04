@@ -80,4 +80,23 @@ class AuthTest extends TestCase
         ->assertUnauthorized()
         ->assertStatus(401);
     }
+
+    public function test_user_provider () : void
+    {
+        $this->seed(UserSeeder::class);
+
+        $this->get('simple-api/user/current', [
+            'accept'    => 'application/json'
+        ])
+        ->assertUnauthorized()
+        ->assertStatus(401);
+
+        $this->get('simple-api/user/current', [
+            'API_KEY'   => 'secret'
+        ])
+        ->assertStatus(200)
+        ->assertOk()
+        ->assertSuccessful()
+        ->assertSee('hello james');
+    }
 }
