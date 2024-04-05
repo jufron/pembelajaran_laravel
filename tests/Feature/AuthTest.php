@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Models\Contact;
 use App\Models\User;
+use Database\Seeders\ContactSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -98,5 +101,109 @@ class AuthTest extends TestCase
         ->assertOk()
         ->assertSuccessful()
         ->assertSee('hello james');
+    }
+
+    public function test_user_gate () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            ContactSeeder::class
+        ]);
+
+        $user = User::query()
+                    ->where('email', 'erik@gmail.com')
+                    ->get()
+                    ->first();
+
+        Auth::login($user);
+
+        $contact = Contact::query()
+                          ->where('user_id', $user->id)
+                          ->get()
+                          ->first();
+
+        $this->assertTrue(Gate::allows('get-contact', $contact));
+        $this->assertTrue(Gate::allows('create-contact', $contact));
+        $this->assertTrue(Gate::allows('update-contact', $contact));
+        $this->assertTrue(Gate::allows('delete-contact', $contact));
+    }
+
+    public function test_gate_method ()
+    {
+        $this->seed([
+            UserSeeder::class,
+            ContactSeeder::class
+        ]);
+
+        $user1 = User::query()->where('email', 'erik@gmail.com')
+                              ->get()
+                              ->first();
+
+        // syarat menggunakan gate harus user sudah login jika tidak maka semuanya dianggap false
+        Auth::login($user1);
+
+        $contact1 = Contact::query()
+                          ->where('user_id', $user1->id)
+                          ->get()
+                          ->first();
+
+        // user1 and contact 1
+        $this->assertTrue(Gate::allows(['create-contact', 'update-contact'], $contact1));
+        $this->assertFalse(Gate::none(['create-contact', 'delete-contact'], $contact1));
+        $this->assertTrue(Gate::any(['create-contact', 'get-contact', 'delete-contact'], $contact1));
+        $this->assertTrue(Gate::denies(['create-contact', 'get-contact', 'delete-contact'], $contact1));
+
+     }
+
+    public function test_gate_user () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            ContactSeeder::class
+        ]);
+
+        $user1 = User::query()->where('email', 'erik@gmail.com')
+                              ->get()
+                              ->first();
+
+        $gate = Gate::forUser($user1);
+
+        $contact1 = Contact::query()
+                    ->where('user_id', $user1->id)
+                    ->get()
+                    ->first();
+
+        $this->assertTrue($gate->allows(['create-contact', 'get-contact'], $contact1));
+        $this->assertTrue($gate->denies(['update-contact', 'delete-contact'], $contact1));
+    }
+
+    public function test_gate_response () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            ContactSeeder::class
+        ]);
+
+        // berhak menghapus data
+        $user1 = User::query()->where('email', 'james@gmail.com')
+                        ->get()
+                        ->first();
+
+        // tidak berhak menghapus data
+        $user2 = User::query()->where('email', 'dodi@gmail.com')
+                    ->get()
+                    ->first();
+
+        Auth::login($user1);
+
+        $response1 = Gate::inspect('delete-contact');
+        $this->assertTrue($response1->allowed());
+
+        Auth::logout();
+
+        Auth::login($user2);
+
+        $response2 = Gate::inspect('delete-contact');
+        $this->assertFalse($response2->allowed());
     }
 }

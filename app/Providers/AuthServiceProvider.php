@@ -4,6 +4,8 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
+use App\Models\Contact;
+use App\Models\User;
 use App\Providers\{
     Guard\TokenGuard,
     User\SimpleUserProvider
@@ -12,6 +14,8 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\Response;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -22,6 +26,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         //
+    ];
+
+    protected $gatesPost = [
+        'get-contact', 'create-contact', 'update-contact', 'delete-contact'
     ];
 
     /**
@@ -42,6 +50,27 @@ class AuthServiceProvider extends ServiceProvider
             return new SimpleUserProvider();
         });
 
+        // foreach ($this->gatesPost as $gate) {
+        //     Gate::define($gate, function (User $user, Contact $contact) {
+        //         return $user->id === $contact->user->id
+        //             ? Response::allow()
+        //             : Response::denyWithStatus(301)->deny('kamu tidak bisa');
+        //     });
+        // }
 
+        Gate::define('get-contact', function (User $user, Contact $contact) {
+            return $user->id === $contact->user_id;
+        })
+        ->define('create-contact', function (User $user, Contact $contact) {
+            return $user->id === $contact->user_id;
+        })
+        ->define('update-contact', function (User $user, Contact $contact) {
+            return $user->id === $contact->user_id;
+        })
+        ->define('delete-contact', function (User $user) {
+            return $user->name == 'james'
+                    ? Response::allow()
+                    : Response::deny('anda tidak memiliki akses untuk menghapus data tersebut')->code(301);
+        });
     }
 }

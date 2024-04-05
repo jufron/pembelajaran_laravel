@@ -21,5 +21,21 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'token'             => 'secret'
         ]);
+
+        User::create([
+            'name'              => 'dodi',
+            'email'             => 'dodi@gmail.com',
+            'password'          => Hash::make('12345678'),
+            'email_verified_at' => now(),
+            'token'             => 'secret'
+        ]);
+
+        User::create([
+            'name'              => 'james',
+            'email'             => 'james@gmail.com',
+            'password'          => Hash::make('12345678'),
+            'email_verified_at' => now(),
+            'token'             => 'secret'
+        ]);
     }
 }
