@@ -326,4 +326,22 @@ class AuthTest extends TestCase
         ->assertSeeText('no update')
         ->assertSeeText('no delete');
     }
+
+    public function test_user_registration_guest (): void
+    {        
+        $this->assertTrue(Gate::allows('create', User::class));
+    }
+    
+    public function test_user_registration () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+        ]);
+
+        $user = User::query()->where('email', 'erik@gmail.com')->get()->first();
+        Auth::login($user);
+
+        $this->assertFalse(Gate::allows('create', User::class));
+        
+    }
 }
