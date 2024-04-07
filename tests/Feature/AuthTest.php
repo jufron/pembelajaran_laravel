@@ -291,4 +291,39 @@ class AuthTest extends TestCase
                 'message'   => 'success'
              ]);
     }
+
+    public function test_blade_view_when_user_login () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            TodoSeeder::class
+        ]);
+
+        $user = User::query()->where('email', 'erik@gmail.com')->get()->first();
+
+        $this->actingAs($user)
+        ->view('todo', [
+            'todos' => $user->todo()->get()
+        ])
+        ->assertSeeText('update')
+        ->assertDontSeeText('no update')
+        ->assertSeeText('delete')
+        ->assertDontSeeText('no delete');
+    }
+
+    public function test_blade_view_when_user_not_login () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            TodoSeeder::class
+        ]);
+
+        $user = User::query()->where('email', 'erik@gmail.com')->get()->first();
+
+        $this->view('todo', [
+            'todos' => $user->todo()->get()
+        ])
+        ->assertSeeText('no update')
+        ->assertSeeText('no delete');
+    }
 }
