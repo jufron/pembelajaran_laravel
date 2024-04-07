@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,8 @@ Route::controller(UserController::class)->group( function () {
     Route::get('api/user/current', 'currentUser')->middleware('auth:token');
     Route::get('simple-api/user/current', 'currentUser')->middleware('auth:simple-token');
 });
+
+Route::post('api/todo', [TodoController::class, 'store']);
 
 
 require __DIR__.'/auth.php';

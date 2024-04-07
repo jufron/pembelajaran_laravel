@@ -237,4 +237,58 @@ class AuthTest extends TestCase
 
         var_dump(Gate::allows('create', $todo2));
     }
+
+    public function test_authorizable () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            TodoSeeder::class
+        ]);
+
+        $user1 = User::query()->where('email', 'erik@gmail.com')->get()->first();
+        $user2 = User::query()->where('email', 'dodi@gmail.com')->get()->first();
+
+        Auth::login($user1);
+
+        $todo1 = Todo::query()->where('user_id', $user1->id)->get()->first();
+        $todo2 = Todo::query()->where('user_id', $user2->id)->get()->first();
+
+        $this->assertTrue($user1->can('view', $todo1));
+        // $this->assertTrue(Gate::allows('viewAny', Todo::class));
+        // $this->assertTrue(Gate::allows('create', Todo::class));
+        $this->assertTrue($user1->can('delete', $todo1));
+        $this->assertTrue($user1->can('update', $todo1));
+
+        $this->assertTrue($user2->can('view', $todo2));
+        // $this->assertFalse(Gate::allows('create', Todo::class));
+        $this->assertTrue($user2->can('update', $todo2));
+        $this->assertTrue($user2->can('delete', $todo2));
+
+        var_dump(Gate::allows('create', $todo2));
+    }
+
+    public function test_authorize_request () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            TodoSeeder::class
+        ]);
+
+        $this->post('api/todo')
+            ->assertStatus(403)
+            ->assertForbidden();
+
+        $user = User::query()->where('email', 'erik@gmail.com')
+                             ->get()
+                             ->first();
+
+        $this->actingAs($user)->post('api/todo')
+             ->assertStatus(200)
+             ->assertOk()
+             ->assertSuccessful()
+             ->assertJson([
+                'status'    => '200',
+                'message'   => 'success'
+             ]);
+    }
 }
