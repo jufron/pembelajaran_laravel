@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Contact;
+use App\Models\Todo;
 use App\Models\User;
 use Database\Seeders\ContactSeeder;
+use Database\Seeders\TodoSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -205,5 +207,34 @@ class AuthTest extends TestCase
 
         $response2 = Gate::inspect('delete-contact');
         $this->assertFalse($response2->allowed());
+    }
+
+    public function test_policy () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            TodoSeeder::class
+        ]);
+
+        $user1 = User::query()->where('email', 'erik@gmail.com')->get()->first();
+        $user2 = User::query()->where('email', 'dodi@gmail.com')->get()->first();
+
+        Auth::login($user1);
+
+        $todo1 = Todo::query()->where('user_id', $user1->id)->get()->first();
+        $todo2 = Todo::query()->where('user_id', $user2->id)->get()->first();
+
+        $this->assertTrue(Gate::allows('view', $todo1));
+        // $this->assertTrue(Gate::allows('viewAny', Todo::class));
+        // $this->assertTrue(Gate::allows('create', Todo::class));
+        $this->assertTrue(Gate::allows('delete', $todo1));
+        $this->assertTrue(Gate::allows('update', $todo1));
+
+        $this->assertFalse(Gate::allows('view', $todo2));
+        // $this->assertFalse(Gate::allows('create', Todo::class));
+        $this->assertFalse(Gate::allows('update', $todo2));
+        $this->assertFalse(Gate::allows('delete', $todo2));
+
+        var_dump(Gate::allows('create', $todo2));
     }
 }
