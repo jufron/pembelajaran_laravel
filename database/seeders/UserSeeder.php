@@ -37,5 +37,13 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'token'             => 'secret'
         ]);
+
+        User::create([
+            'name'              => 'super-admin',
+            'email'             => 'super-admin@gmail.com',
+            'password'          => Hash::make('12345678'),
+            'email_verified_at' => now(),
+            'token'             => 'secret'
+        ]);
     }
 }

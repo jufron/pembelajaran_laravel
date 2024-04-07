@@ -65,4 +65,11 @@ class TodoPolicy
     {
         return $user->id == $todo->user_id;
     }
+
+    public function before (User $user, string $ability) : bool
+    {
+        if ($user->name == 'super-admin') {
+            return true;
+        }
+    }
 }

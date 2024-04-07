@@ -124,10 +124,10 @@ class AuthTest extends TestCase
                           ->get()
                           ->first();
 
-        $this->assertTrue(Gate::allows('get-contact', $contact));
-        $this->assertTrue(Gate::allows('create-contact', $contact));
-        $this->assertTrue(Gate::allows('update-contact', $contact));
-        $this->assertTrue(Gate::allows('delete-contact', $contact));
+        $this->assertTrue($user->can('get-contact', $contact));
+        $this->assertTrue($user->can('create-contact', $contact));
+        $this->assertTrue($user->can('update-contact', $contact));
+        $this->assertTrue($user->can('delete-contact', $contact));
     }
 
     public function test_gate_method ()
@@ -150,7 +150,7 @@ class AuthTest extends TestCase
                           ->first();
 
         // user1 and contact 1
-        $this->assertTrue(Gate::allows(['create-contact', 'update-contact'], $contact1));
+        $this->assertTrue($user->can(['create-contact', 'update-contact'], $contact1));
         $this->assertFalse(Gate::none(['create-contact', 'delete-contact'], $contact1));
         $this->assertTrue(Gate::any(['create-contact', 'get-contact', 'delete-contact'], $contact1));
         $this->assertTrue(Gate::denies(['create-contact', 'get-contact', 'delete-contact'], $contact1));
@@ -175,7 +175,7 @@ class AuthTest extends TestCase
                     ->get()
                     ->first();
 
-        $this->assertTrue($gate->allows(['create-contact', 'get-contact'], $contact1));
+        $this->assertTrue($$user->can(['create-contact', 'get-contact'], $contact1));
         $this->assertTrue($gate->denies(['update-contact', 'delete-contact'], $contact1));
     }
 
@@ -224,18 +224,18 @@ class AuthTest extends TestCase
         $todo1 = Todo::query()->where('user_id', $user1->id)->get()->first();
         $todo2 = Todo::query()->where('user_id', $user2->id)->get()->first();
 
-        $this->assertTrue(Gate::allows('view', $todo1));
-        // $this->assertTrue(Gate::allows('viewAny', Todo::class));
-        // $this->assertTrue(Gate::allows('create', Todo::class));
-        $this->assertTrue(Gate::allows('delete', $todo1));
-        $this->assertTrue(Gate::allows('update', $todo1));
+        $this->assertTrue($user->can('view', $todo1));
+        // $this->assertTrue($user->can('viewAny', Todo::class));
+        // $this->assertTrue($user->can('create', Todo::class));
+        $this->assertTrue($user->can('delete', $todo1));
+        $this->assertTrue($user->can('update', $todo1));
 
-        $this->assertFalse(Gate::allows('view', $todo2));
-        // $this->assertFalse(Gate::allows('create', Todo::class));
-        $this->assertFalse(Gate::allows('update', $todo2));
-        $this->assertFalse(Gate::allows('delete', $todo2));
+        $this->assertFalse($user->can('view', $todo2));
+        // $this->assertFalse($user->can('create', Todo::class));
+        $this->assertFalse($user->can('update', $todo2));
+        $this->assertFalse($user->can('delete', $todo2));
 
-        var_dump(Gate::allows('create', $todo2));
+        var_dump($user->can('create', $todo2));
     }
 
     public function test_authorizable () : void
@@ -254,17 +254,17 @@ class AuthTest extends TestCase
         $todo2 = Todo::query()->where('user_id', $user2->id)->get()->first();
 
         $this->assertTrue($user1->can('view', $todo1));
-        // $this->assertTrue(Gate::allows('viewAny', Todo::class));
-        // $this->assertTrue(Gate::allows('create', Todo::class));
+        // $this->assertTrue($user->can('viewAny', Todo::class));
+        // $this->assertTrue($user->can('create', Todo::class));
         $this->assertTrue($user1->can('delete', $todo1));
         $this->assertTrue($user1->can('update', $todo1));
 
         $this->assertTrue($user2->can('view', $todo2));
-        // $this->assertFalse(Gate::allows('create', Todo::class));
+        // $this->assertFalse($user->can('create', Todo::class));
         $this->assertTrue($user2->can('update', $todo2));
         $this->assertTrue($user2->can('delete', $todo2));
 
-        var_dump(Gate::allows('create', $todo2));
+        var_dump($user->can('create', $todo2));
     }
 
     public function test_authorize_request () : void
@@ -329,7 +329,7 @@ class AuthTest extends TestCase
 
     public function test_user_registration_guest (): void
     {        
-        $this->assertTrue(Gate::allows('create', User::class));
+        $this->assertTrue($user->can('create', User::class));
     }
     
     public function test_user_registration () : void
@@ -341,7 +341,26 @@ class AuthTest extends TestCase
         $user = User::query()->where('email', 'erik@gmail.com')->get()->first();
         Auth::login($user);
 
-        $this->assertFalse(Gate::allows('create', User::class));
-        
+        $this->assertFalse($user->can('create', User::class));
+
+    }
+
+    public function test_before_policy () : void
+    {
+        $this->seed([
+            UserSeeder::class,
+            TodoSeeder::class
+        ]);
+
+        $user = User::query()->where('name', 'super-admin')->get()->first();
+
+        $todo = Todo::query()->get()->first();
+
+        // Auth::login($user);
+
+        $this->assertTrue($user->can('view', $todo));
+        $this->assertTrue($user->can('create', Todo::class));
+        $this->assertTrue($user->can('update', $todo));
+        $this->assertTrue($user->can('delete', $todo));
     }
 }
