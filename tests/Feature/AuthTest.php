@@ -8,11 +8,16 @@ use App\Models\User;
 use Database\Seeders\ContactSeeder;
 use Database\Seeders\TodoSeeder;
 use Database\Seeders\UserSeeder;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Contracts\Encryption\EncryptException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -328,10 +333,10 @@ class AuthTest extends TestCase
     }
 
     public function test_user_registration_guest (): void
-    {        
+    {
         $this->assertTrue($user->can('create', User::class));
     }
-    
+
     public function test_user_registration () : void
     {
         $this->seed([
@@ -362,5 +367,39 @@ class AuthTest extends TestCase
         $this->assertTrue($user->can('create', Todo::class));
         $this->assertTrue($user->can('update', $todo));
         $this->assertTrue($user->can('delete', $todo));
+    }
+
+    public function test_encryption_and_description (): void
+    {
+        $data = 'jufron tamo ama';
+        try {
+            $dataEncrypt = Crypt::encryptString($data);
+            $dataEncrypt2 = Crypt::encrypt($data);
+        } catch (EncryptException $err) {
+            $err->getMessage();
+            $err->getTraceAsString();
+            $err->getCode();
+
+            Artisan::call('cache:clear');
+            Artisan::call('optimize:clear');
+        }
+
+        try {
+            $dataDescription = Crypt::decryptString($dataEncrypt);
+            $dataDescription2 = Crypt::decrypt($dataEncrypt2);
+        } catch (DecryptException $err) {
+            $err->getMessage();
+            $err->getTraceAsString();
+            $err->getCode();
+
+            Artisan::call('cache:clear');
+            Artisan::call('optimize:clear');
+        }
+
+        Log::info("encrypt string : $dataEncrypt");
+        Log::info("encrypt : $dataEncrypt2");
+
+        $this->assertEquals('jufron tamo ama', $dataDescription);
+        $this->assertEquals('jufron tamo ama', $dataDescription2);
     }
 }
