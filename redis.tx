@@ -1,0 +1,8 @@
+password: 'tWBS9Y2d1j9swBe4A7QsJ2Cg9VmqzFzM',
+host: 'redis-14995.c11.us-east-1-2.ec2.cloud.redislabs.com',
+port: 14995
+
+
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
