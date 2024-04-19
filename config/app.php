@@ -160,6 +160,8 @@ return [
          * Package Service Providers...
          */
 
+        App\Providers\FooBarServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
